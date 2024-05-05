@@ -17,63 +17,98 @@
                 <th>No</th><th>제목</th><th>작성자</th><th>수정날짜</th><th>조회수</th>
             </thead>
             <tbody>
-                <tr v-for="(item, index) in tableData " :key="index">
-                    <td>{{index+1}}</td>
-                    <td><router-link to="/noticeWrite?id=1" class="notice-change">{{item.title}}</router-link></td>
-                    <td>{{item.writer}}</td>
-                    <td>{{item.udate}}</td>
-                    <td>{{item.count_cnt}}</td>
+                <tr>
+                    <td></td>
+                    <td><router-link to="/noticeWrite?id=1" class="notice-change"></router-link></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
                 </tr>
             </tbody>
         </table>
         <div class="page-unit">
-            <button v-for="item in pageUnit " :key="item" v-on:click="dataLoad" >{{item}}</button>
         </div>
     </div>
 </template>
 
 <script setup>
+    import axios from 'axios';
     import { defineProps } from "vue";
-
     const props = defineProps({
         url: String
     });
+    // console.log(props.url+"?pageNumber=1&resultType=json")
     
-    let tableData = []
-    for(let i=0; i<20; i++){
-        let d = {}
-        if(i<=10){
-            d["title"] = "title_"+(i+i)
-            d["writer"] = "title_"+(i+i)
-            d["udate"] = "0000-00-00 00:00:00"
-            d["count_cnt"] = (i+i)
-        }else{
-            d["title"] = ""
-            d["writer"] = ""
-            d["update"] = ""
-            d["count_cnt"] = ""
+    window.onload = function(){
+        dataLoad(1);
+    }
+    function dataLoad(num){
+
+        console.log(num)
+        axios.get(props.url+"?pageNumber="+num+"&resultType=json")
+        .then(function (response) {
+            console.log(response.data);
+            let tableData = response.data.root.dataset.rows
+            table_ui(tableData)
+            let pageTotal = response.data.root.parameters.pageTotal
+            let pageUnit = response.data.root.parameters.pageUnit
+
+            let pageFirst;
+            if(pageUnit <= 10){
+                pageFirst = 1
+            }else{
+                pageFirst = (pageUnit - (pageUnit%10)) -1;
+            }
+            let pageEnd;
+            if(pageUnit == pageTotal){
+                pageEnd = pageUnit;
+            }else{
+                pageEnd = (pageUnit - (pageUnit%10)) + 10;
+            }
+            page_ui(pageUnit)
+
+
+            
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+    }
+
+    function table_ui(tableData){
+        let t = ""
+        for(let i=0;i<tableData.length;i++){
+            t += "<tr>";
+            t += "<td>"+(i+1)+"</td>"
+            t += "<td><router-link to='/noticeWrite?id=1' class='notice-change'>"+(tableData[i]["title"]==null ? "" :tableData[i]["title"])+"</router-link></td>"
+            t += "<td>"+(tableData[i]["writer"]==null ? "" :tableData[i]["writer"])+"</td>"
+            t += "<td>"+(tableData[i]["udate"]==null ? "" :tableData[i]["udate"])+"</td>"
+            t += "<td>"+(tableData[i]["click_cnt"]==null ? "" :tableData[i]["click_cnt"])+"</td>"
+            t += "</tr>";
         }
-        tableData.push(d)
-    }
-    let pageUnitNum = 14
-    let pageUnit = []
-    for(let i=0; i<pageUnitNum;i++){
-        if(i == 0){ pageUnit.push("<<") }
-        else if(i == 1){ pageUnit.push("<") }
-        else if(i == pageUnitNum-2){ pageUnit.push(">") }
-        else if(i == pageUnitNum-1){ pageUnit.push(">>") }
-        else{ pageUnit.push(i-1) }
-    }
 
-    function dataLoad(e){
-        let number = e.target.textContent
-        if(number == "<<"){ pageUnit.push(1) }
-        else if(number == "<"){ pageUnit.push(2) }
-        else if(number == ">"){ pageUnit.push(pageUnitNum-2) }
-        else if(number == ">>"){ pageUnit.push(pageUnitNum-1) }
-        pageUnit.push(number)
+        document.querySelector("tbody").innerHTML = t
     }
-
+    function page_ui(pageUnit){
+        document.querySelector(".page-unit").innerHTML = ""
+        for(let i=0; i<pageUnit+4;i++){
+            if(i == 0){ 
+                document.querySelector(".page-unit").innerHTML += '<button onclick="dataLoad"><<</button>'
+            }
+            else if(i == 1){ 
+                document.querySelector(".page-unit").innerHTML += '<button on:click="dataLoad">></button>' 
+            }
+            else if(i == pageUnit+2){ 
+                document.querySelector(".page-unit").innerHTML += '<button on:click="dataLoad">></button>' 
+            }
+            else if(i == pageUnit+3){ 
+                document.querySelector(".page-unit").innerHTML += '<button on:click="dataLoad">>></button>' 
+            }
+            else{ 
+                document.querySelector(".page-unit").innerHTML += ('<button on:click="dataLoad">'+(i-1)+'</button>')
+            }
+        }
+    }
 
 </script>
 
@@ -123,7 +158,6 @@
         text-align: center;
     }
     .TableList table tbody tr td{
-        height: 30px;
         border: 1px solid black;
         text-align: center;
     }
@@ -139,6 +173,7 @@
     .TableList table tbody tr td .notice-change{
         color: #0000ff;
         text-decoration-line: none;
+        cursor: pointer;
     }
     .notice-add{
         position: absolute;
