@@ -2,7 +2,7 @@
     <header>
         <h1>TEST</h1>
         <nav>
-            <router-link class="header-menu" to="#">MENU1</router-link>
+            <router-link class="header-menu" to="/noticeList">NOTICE</router-link>
             <router-link class="header-menu" to="#">MENU1</router-link>
             <router-link class="header-menu" to="#">MENU1</router-link>
             <router-link class="header-menu" to="#">MENU1</router-link>
@@ -34,6 +34,7 @@
         align-items: center;
         padding: 0px 20px 0px 10px;
         box-sizing: border-box;
+        font-weight: bold;
     }
     h1{
         font-size: 40px;

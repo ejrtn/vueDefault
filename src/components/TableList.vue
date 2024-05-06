@@ -8,7 +8,7 @@
                     <option value="all">전체</option>
                 </select>
                 <input type="text" class="search-text">
-                <button>확인</button>
+                <button class='search-ok'>확인</button>
             </div>
             <button class="notice-add" onclick="location.href='/noticeWrite'">추가</button>
         </div>
@@ -17,98 +17,121 @@
                 <th>No</th><th>제목</th><th>작성자</th><th>수정날짜</th><th>조회수</th>
             </thead>
             <tbody>
-                <tr>
-                    <td></td>
-                    <td><router-link to="/noticeWrite?id=1" class="notice-change"></router-link></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
             </tbody>
         </table>
         <div class="page-unit">
+            
         </div>
     </div>
 </template>
 
 <script setup>
+    let tableData;
+    let pageNumber;
+    let pageTotal;
+    let pageUnit;
+    let pageFirst;
+    let pageEnd;
+
     import axios from 'axios';
     import { defineProps } from "vue";
     const props = defineProps({
         url: String
     });
-    // console.log(props.url+"?pageNumber=1&resultType=json")
     
     window.onload = function(){
         dataLoad(1);
+        document.querySelector(".page-unit").addEventListener("click",function(e){
+            if(e.target.tagName=="BUTTON"){
+                if(e.target.textContent == "<<") dataLoad(1);
+                else if(e.target.textContent == "<") dataLoad(pageFirst-1 < 1 ? 1 : pageFirst-1);
+                else if(e.target.textContent == ">") dataLoad(pageEnd+1 > pageTotal ? pageTotal : pageEnd+1);
+                else if(e.target.textContent == ">>") dataLoad(pageTotal);
+                else dataLoad(e.target.textContent);
+            }
+        })
+
+        document.querySelector(".table-top button").addEventListener("click",function(){
+            dataLoad(1);
+        })
     }
-    function dataLoad(num){
+    
+    const dataLoad = (num) => {
+        let params = {
+            pageNumber:num,
+            resultType:'json',
+        }
 
-        console.log(num)
-        axios.get(props.url+"?pageNumber="+num+"&resultType=json")
+        params[
+            document.querySelector(".search-text").value.replaceAll(" ","") == '' ? 'all' : document.querySelector(".search-type").value
+        ] = document.querySelector(".search-text").value
+
+        axios.get(props.url,{
+            params:params
+        })
         .then(function (response) {
-            console.log(response.data);
-            let tableData = response.data.root.dataset.rows
-            table_ui(tableData)
-            let pageTotal = response.data.root.parameters.pageTotal
-            let pageUnit = response.data.root.parameters.pageUnit
-
-            let pageFirst;
-            if(pageUnit <= 10){
-                pageFirst = 1
+            if(response.data.root.dataset.rows[0].result == 'error'){
+                console.log(response.data.root.dataset.rows[0].msg)
             }else{
-                pageFirst = (pageUnit - (pageUnit%10)) -1;
-            }
-            let pageEnd;
-            if(pageUnit == pageTotal){
-                pageEnd = pageUnit;
-            }else{
-                pageEnd = (pageUnit - (pageUnit%10)) + 10;
-            }
-            page_ui(pageUnit)
+                tableData = response.data.root.dataset.rows
+                pageTotal = response.data.root.parameters.pageTotal
+                pageUnit = response.data.root.parameters.pageUnit
 
+                pageFirst = num-(num%pageUnit)
+                if(pageTotal > num - (num%pageUnit) + pageUnit){
+                    pageEnd = parseInt(num - (num%pageUnit) + pageUnit)
+                }else{
+                    pageEnd = parseInt(pageTotal)
+                }
+                
+                let tt = "";
+                for(let i=pageFirst; i<pageEnd+4;i++){
+                    // console.log(i)
+                    if(i == pageFirst){
+                        tt += '<button><<</button>'
+                    }
+                    else if(i == pageFirst+1){ 
+                        tt += '<button><</button>' 
+                    }
+                    else if(i == pageEnd+2){ 
+                        tt += '<button>></button>' 
+                    }
+                    else if(i == pageEnd+3){ 
+                        tt += '<button>>></button>' 
+                    }
+                    else{ 
+                        tt += ('<button>'+(i-1)+'</button>')
+                    }
+                }
+                document.querySelector(".page-unit").innerHTML = tt
 
-            
+                let t = "";
+                for(let i=0;i<tableData.length;i++){
+                    t += "<tr>";
+                    t += "<td>"+(i+1)+"</td>"
+                    t += "<td><a href='/noticeWrite?id="+tableData[i]["id"]+"' class='notice-change'>"+(tableData[i]["title"]==null ? "" :tableData[i]["title"])+"</a></td>"
+                    t += "<td>"+(tableData[i]["writer"]==null ? "" :tableData[i]["writer"])+"</td>"
+                    t += "<td>"+(tableData[i]["udate"]==null ? "" :tableData[i]["udate"])+"</td>"
+                    t += "<td>"+(tableData[i]["click_cnt"]==null ? "" :tableData[i]["click_cnt"])+"</td>"
+                    t += "</tr>";
+                }
+                for(let i=0;i<20-tableData.length;i++){
+                    t += "<tr>";
+                    t += "<td></td>"
+                    t += "<td></td>"
+                    t += "<td></td>"
+                    t += "<td></td>"
+                    t += "<td></td>"
+                    t += "</tr>";
+                }
+                document.querySelector("tbody").innerHTML = t
+            }
         })
         .catch(function (error) {
             console.log(error);
         });
     }
 
-    function table_ui(tableData){
-        let t = ""
-        for(let i=0;i<tableData.length;i++){
-            t += "<tr>";
-            t += "<td>"+(i+1)+"</td>"
-            t += "<td><router-link to='/noticeWrite?id=1' class='notice-change'>"+(tableData[i]["title"]==null ? "" :tableData[i]["title"])+"</router-link></td>"
-            t += "<td>"+(tableData[i]["writer"]==null ? "" :tableData[i]["writer"])+"</td>"
-            t += "<td>"+(tableData[i]["udate"]==null ? "" :tableData[i]["udate"])+"</td>"
-            t += "<td>"+(tableData[i]["click_cnt"]==null ? "" :tableData[i]["click_cnt"])+"</td>"
-            t += "</tr>";
-        }
-
-        document.querySelector("tbody").innerHTML = t
-    }
-    function page_ui(pageUnit){
-        document.querySelector(".page-unit").innerHTML = ""
-        for(let i=0; i<pageUnit+4;i++){
-            if(i == 0){ 
-                document.querySelector(".page-unit").innerHTML += '<button onclick="dataLoad"><<</button>'
-            }
-            else if(i == 1){ 
-                document.querySelector(".page-unit").innerHTML += '<button on:click="dataLoad">></button>' 
-            }
-            else if(i == pageUnit+2){ 
-                document.querySelector(".page-unit").innerHTML += '<button on:click="dataLoad">></button>' 
-            }
-            else if(i == pageUnit+3){ 
-                document.querySelector(".page-unit").innerHTML += '<button on:click="dataLoad">>></button>' 
-            }
-            else{ 
-                document.querySelector(".page-unit").innerHTML += ('<button on:click="dataLoad">'+(i-1)+'</button>')
-            }
-        }
-    }
 
 </script>
 
@@ -145,6 +168,7 @@
         background: none;
         border: 1px solid #000;
         font-size: 18px;
+        cursor: pointer;
     }
     .TableList table{
         width: 1280px;
@@ -158,6 +182,7 @@
         text-align: center;
     }
     .TableList table tbody tr td{
+        height: 22px;
         border: 1px solid black;
         text-align: center;
     }

@@ -2,20 +2,35 @@
     <div class="login-div">
         <div class="login-input-div">
             <span>로그인</span>
-            <input type="text" placeholder="로그인">
+            <input type="text" placeholder="로그인" class="id">
         </div>
         <div class="login-input-div">
             <span>비밀번호</span>
-            <input type="text" placeholder="비밀번호">
+            <input type="text" placeholder="비밀번호" class="pw">
         </div>
-        <router-link to="/noticeList" class="login-ok">로그인</router-link>
+        <button class="login-ok">로그인</button>
     </div>
 </template>
 
-<script>
-
-export default {
-
+<script setup>
+import axios from 'axios';
+window.onload = function(){
+    
+    document.querySelector(".login-ok").addEventListener("click",function(){
+        axios.post("http://localhost:8081/login.do",{
+            id:document.querySelector(".id").value,
+            pw:document.querySelector(".pw").value,
+            resultType:"json"
+        })
+        .then(function (response) {
+            if(response.data.root.dataset.rows[0].result == 'success'){
+                location.href = "/noticeList"
+            }
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+    })
 }
 </script>
 <style scoped>
