@@ -11,7 +11,10 @@
                 <input type="text" placeholder="작성자" class="writer">
             </div>
         </div>
-        <textarea class="notice-write-text"></textarea>
+        <!-- <div id="write_area" class="write_area" contenteditable="true" ondragenter="return false;" ondrop="return false;" ondragover="return false;">
+            <img src="/src/assets/logo.png">
+        </div> -->
+        <Noticewriter/>
         <div>
             <button class="notice-ok notice-btn">{{pageType}}</button>
             <button class="notice-cancel notice-btn">취소</button>
@@ -22,6 +25,7 @@
 <script setup>
     import axios from 'axios';
     import Header from '@/components/Header.vue'
+    import Noticewriter from '@/components/Noticewriter.vue'
     import { defineProps } from "vue";
     const props = defineProps({
         url: String
@@ -40,7 +44,7 @@
             .then(function (response) {
                 document.querySelector(".title").value = response.data.root.dataset.rows[0].title
                 document.querySelector(".writer").value = response.data.root.dataset.rows[0].writer
-                document.querySelector(".notice-write-text").value = response.data.root.dataset.rows[0].content
+                document.querySelector(".write_area").value = response.data.root.dataset.rows[0].content
             })
             .catch(function (error) {
                 console.log(error);
@@ -52,7 +56,7 @@
             let params={
                     title:document.querySelector(".title").value,
                     writer:document.querySelector(".writer").value,
-                    content:document.querySelector(".notice-write-text").value,
+                    content:document.querySelector(".write_area").value,
                     resultType:"json"
                 }
             let url = "noticeSave.do"
@@ -110,16 +114,6 @@
     .notice-write-conf div input{
         font-size: 18px;
         margin-left: 5px;
-    }
-    .notice-write-text{
-        width: 100%;
-        height: 500px;
-        resize: none;
-        outline: none;
-        font-size: 18px;
-        padding: 5px;
-        box-sizing: border-box;
-        overflow-y: auto;
     }
     .notice-btn{
         text-decoration-line: none;
