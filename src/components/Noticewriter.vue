@@ -8,8 +8,8 @@
         <div></div>
         <textarea id="editor_text"></textarea>
     </div>
-    <input type="file" accept="video/*" id="select_video_file" class="display-none" multiple>
-    <input type="file" accept="image/*" id="select_image_file" class="display-none" multiple>
+    <input type="file" accept="video/*" id="video_file" name="video_file" multiple hidden>
+    <input type="file" accept="image/*" id="image_file" name="image_file" multiple hidden>
 </template>
 
 <script setup>
@@ -18,14 +18,14 @@
     window.onload = function(){
         editor_text_event();
         document.querySelector(".editor-image").addEventListener("click",function(e){
-            document.querySelector("#select_image_file").click()
+            document.querySelector("#image_file").click()
         })
         document.querySelector(".editor-video").addEventListener("click",function(e){
-            document.querySelector("#select_video_file").click()
+            document.querySelector("#video_file").click()
         })
 
-        document.querySelector("#select_image_file").addEventListener("change",function(){
-            file_server_push(this.files[0])
+        document.querySelector("#image_file").addEventListener("change",function(event){
+            file_server_push(event.target.files[0])
             let t;
             const reader = new FileReader();
             reader.onload = (e) => {
@@ -36,8 +36,8 @@
             
             
         })
-        document.querySelector("#select_video_file").addEventListener("change",function(){
-            file_server_push(this.files[0])
+        document.querySelector("#video_file").addEventListener("change",function(event){
+            file_server_push(event.target.files[0])
             let t;
             const reader = new FileReader();
             reader.onload = (e) => {
@@ -62,14 +62,17 @@
 
     function file_server_push(file){
         let formData = new FormData(); // formData 객체를 생성한다.
-        formData.append("file", file)
-        axios.post('/api/fileUpload.do',formData,{
-            header:{
-                'Content-Type':'multipart/form-data'
-            }
+        formData.append('file', file)
+
+        axios.post('/api/fileUpload.do', formData,{
+            header:{"Content-Type": `multipart/form-data`,}
         })
         .then((res) => {
             console.log(res);
+        })
+        .catch((response) => {
+            //handle error
+            console.log(response);
         });
     }
 </script>
