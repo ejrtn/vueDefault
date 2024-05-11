@@ -1,6 +1,6 @@
 <template>
     <Header/>
-    <TableList url="http://localhost:8081/noticeList.do"/>
+    <TableList url="/api/noticeList.do"/>
 </template>
 
 

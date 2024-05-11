@@ -17,7 +17,7 @@ import axios from 'axios';
 window.onload = function(){
     
     document.querySelector(".login-ok").addEventListener("click",function(){
-        axios.post("http://localhost:8081/login.do",{
+        axios.post("/api/login.do",{
             id:document.querySelector(".id").value,
             pw:document.querySelector(".pw").value,
             resultType:"json"
