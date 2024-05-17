@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Login from '../views/LoginView.vue'
 import NoticeListView from '../views/NoticeListView.vue'
 import NoticeWriteView from '../views/NoticeWriteView.vue'
+import WordEn from '../views/WordEn.vue'
 
 const routes = [
     {
@@ -12,12 +13,26 @@ const routes = [
     {
         path: '/noticeList',
         name: 'noticeList',
-        component: NoticeListView
+        component: NoticeListView,
+        props: {
+            default: true
+        }
     },
     {
         path:'/noticeWrite',
         name: 'noticeWrite',
-        component: NoticeWriteView
+        component: NoticeWriteView,
+        props: {
+            default: true
+        }
+    },
+    {
+        path:'/workEn',
+        name: 'workEn',
+        component: WordEn,
+        props: {
+            default: true
+        }
     }
 ]
 

@@ -38,8 +38,9 @@
     const props = defineProps({
         url: String
     });
-    
-    window.onload = function(){
+    // console.log(document.querySelector(".page-unit"))
+    window.addEventListener('load', function(){
+
         dataLoad(1);
         document.querySelector(".page-unit").addEventListener("click",function(e){
             if(e.target.tagName=="BUTTON"){
@@ -54,7 +55,7 @@
         document.querySelector(".table-top button").addEventListener("click",function(){
             dataLoad(1);
         })
-    }
+    })
     
     const dataLoad = (num) => {
         let params = {
@@ -65,14 +66,14 @@
         params[
             document.querySelector(".search-text").value.replaceAll(" ","") == '' ? 'all' : document.querySelector(".search-type").value
         ] = document.querySelector(".search-text").value
-
+        
         axios.get(props.url,{
             params:params
-        })
-        .then(function (response) {
-            if(response.data.root.dataset.rows[0].result == 'error'){
+        }).then(function (response) {
+            if(response.data.root.dataset.rows.length > 0 && response.data.root.dataset.rows[0].result == 'error'){
                 console.log(response.data.root.dataset.rows[0].msg)
             }else{
+                console.log(response.data.root)
                 tableData = response.data.root.dataset.rows
                 pageTotal = response.data.root.parameters.pageTotal
                 pageUnit = response.data.root.parameters.pageUnit
@@ -106,6 +107,7 @@
                 document.querySelector(".page-unit").innerHTML = tt
 
                 let t = "";
+                
                 for(let i=0;i<tableData.length;i++){
                     t += "<tr>";
                     t += "<td>"+(i+1)+"</td>"
@@ -114,6 +116,7 @@
                     t += "<td>"+(tableData[i]["udate"]==null ? "" :tableData[i]["udate"])+"</td>"
                     t += "<td>"+(tableData[i]["click_cnt"]==null ? "" :tableData[i]["click_cnt"])+"</td>"
                     t += "</tr>";
+                    
                 }
                 for(let i=0;i<20-tableData.length;i++){
                     t += "<tr>";
@@ -125,6 +128,7 @@
                     t += "</tr>";
                 }
                 document.querySelector("tbody").innerHTML = t
+                
             }
         })
         .catch(function (error) {
@@ -141,6 +145,7 @@
         align-items: center;
         flex-flow: column;
         margin-top: 40px;
+        color:skyblue;
     }
     .table-top{
         height: 35px;
@@ -154,21 +159,26 @@
         display: flex;
         margin-bottom: 15px;
     }
+    .table-list-search input{
+
+    }
     .search-type, .search-text, .table-list-search{
         font-size: 18px;
-        
+        border: none;
+        color: skyblue;
+    }
+    .search-type, .search-text{
+        background: #8e8e8e;
     }
     .search-type{
-        
-    }
-    .search-text{
         margin-right: 10px;
     }
     .table-top button{
         background: none;
-        border: 1px solid #000;
+        border: none;
         font-size: 18px;
         cursor: pointer;
+        color: skyblue;
     }
     .TableList table{
         width: 1280px;
@@ -178,12 +188,12 @@
     }
     .TableList table thead th{
         height: 30px;
-        border: 1px solid black;
+        border: 1px solid #8e8e8e;
         text-align: center;
     }
     .TableList table tbody tr td{
         height: 22px;
-        border: 1px solid black;
+        border: 1px solid #8e8e8e;
         text-align: center;
     }
     .TableList table tbody tr td:nth-child(1){
@@ -209,9 +219,10 @@
     .page-unit button{
         cursor: pointer;
         background: none;
-        border: 1px solid #000;
+        border: 1px solid #8e8e8e;
         font-size: 18px;
         margin: 15px 5px;
+        color: skyblue;
     }
     .page-unit button:active{
         background: #c8c8c8;

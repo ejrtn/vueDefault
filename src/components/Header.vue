@@ -3,7 +3,7 @@
         <h1>TEST</h1>
         <nav>
             <router-link class="header-menu" to="/noticeList">NOTICE</router-link>
-            <router-link class="header-menu" to="#">MENU1</router-link>
+            <router-link class="header-menu" to="/workEn">WORD-EN</router-link>
             <router-link class="header-menu" to="#">MENU1</router-link>
             <router-link class="header-menu" to="#">MENU1</router-link>
         </nav>
@@ -27,6 +27,7 @@
 
 <style scope>
     header{
+        color: skyblue;
         width: 100%;
         height: 85px;
         display: flex;
@@ -51,11 +52,12 @@
         font-size: 18px;
         text-decoration-line: none;
         padding: 10px 50px;
-        border: 1px solid #000;
+        border: 1px solid #8e8e8e;
+        color: skyblue;
     }
     .user-info{
         border-radius: 50%;
-        border: 1px solid #000;
+        border: 1px solid #8e8e8e;
         width: 50px;
         height: 50px;
         display: flex;
@@ -86,10 +88,9 @@
     .user-info div .path{
         text-decoration-line: none;
         cursor: pointer;
-        background: #c8c8c8;
         padding: 8px 10px;
     }
     .user-info div .path:hover{
-        background-color: aqua;
+        color: blue;
     }
 </style>
