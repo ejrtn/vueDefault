@@ -16,9 +16,10 @@
 <script setup>
     import axios from 'axios';
     import Header from '@/components/Header.vue'
+    import { onMounted } from "vue";
     let size = 1;
 
-    window.onload = () =>{
+    onMounted(()=>{
         imageRandomName();
 
         document.querySelector(".word-text button").addEventListener("click",function(){
@@ -39,7 +40,7 @@
                 document.querySelector(".hint-text").textContent = ""
             }
         })
-    }
+    })
     function imageRandomName(){
         axios.get("/api/imageRandomName.do",{
             params:{type:'english'}

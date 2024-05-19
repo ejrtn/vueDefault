@@ -27,14 +27,13 @@
 <script setup>
 
     import axios from "axios";
-    import { defineProps } from "vue";
+    import { defineProps, onMounted } from "vue";
     
     const props = defineProps({
         file_upload_url: String
     });
-    window.addEventListener('load', function(){
-        
-        
+
+    onMounted(()=>{
         editor_text_event();
         document.querySelector(".editor-image").addEventListener("click",function(e){
             document.querySelector("#image_file").click()

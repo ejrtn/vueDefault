@@ -4,7 +4,7 @@
         <nav>
             <router-link class="header-menu" to="/noticeList">NOTICE</router-link>
             <router-link class="header-menu" to="/workEn">WORD-EN</router-link>
-            <router-link class="header-menu" to="#">MENU1</router-link>
+            <router-link class="header-menu" to="#">MEDIA-FILE</router-link>
             <router-link class="header-menu" to="#">MENU1</router-link>
         </nav>
         <div class="user-info">

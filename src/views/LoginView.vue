@@ -14,8 +14,9 @@
 
 <script setup>
 import axios from 'axios';
-window.onload = function(){
-    
+import { onMounted } from "vue";
+
+onMounted(()=>{
     document.querySelector(".login-ok").addEventListener("click",function(){
         axios.post("/api/login.do",{
             id:document.querySelector(".id").value,
@@ -31,7 +32,7 @@ window.onload = function(){
             console.log(error);
         });
     })
-}
+})
 </script>
 <style scoped>
     .login-div{

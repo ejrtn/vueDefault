@@ -3,6 +3,7 @@ import Login from '../views/LoginView.vue'
 import NoticeListView from '../views/NoticeListView.vue'
 import NoticeWriteView from '../views/NoticeWriteView.vue'
 import WordEn from '../views/WordEn.vue'
+import MediaList from '../views/MediaList.vue'
 
 const routes = [
     {
@@ -30,6 +31,14 @@ const routes = [
         path:'/workEn',
         name: 'workEn',
         component: WordEn,
+        props: {
+            default: true
+        }
+    },
+    {
+        path:'/mediaList',
+        name: 'mediaList',
+        component: MediaList,
         props: {
             default: true
         }

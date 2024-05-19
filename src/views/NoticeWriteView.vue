@@ -11,7 +11,7 @@
     import axios from 'axios';
     import Header from '@/components/Header.vue'
     import Noticewriter from '@/components/Noticewriter.vue'
-    import { defineProps } from "vue";
+    import { defineProps, onMounted } from "vue";
 
     const props = defineProps({
         url: String
@@ -19,7 +19,7 @@
     let pageType = location.search=="" ? "저장" : "수정"
     let mediaIng = []
 
-    window.onload = function(){
+    onMounted(()=>{
         document.querySelector(".writer").value = sessionStorage.getItem("id")
 
         const urlParams = new URLSearchParams(location.search);
@@ -143,17 +143,7 @@
                 location.href = '/noticeList'
             }
         })
-    }
-    
-
-    function init(){
-        let editor = document.querySelectorAll("#editor div p")
-        for(let i=0;i<editor.length;i++){
-            if(editor[i].childNodes[0].tagName == "IMG" || editor[i].childNodes[0].tagName == "VIDEO"){
-                mediaIng.push(decodeURI(editor[i].childNodes[0].src).replace("http://localhost:8080/api/",""))
-            }
-        }
-    }
+    })
 </script>
 
 <style scope>

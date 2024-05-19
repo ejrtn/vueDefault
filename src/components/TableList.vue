@@ -35,12 +35,12 @@
 
     import axios from 'axios';
     import { defineProps } from "vue";
+    import {onMounted} from 'vue';
     const props = defineProps({
         url: String
     });
-    // console.log(document.querySelector(".page-unit"))
-    window.addEventListener('load', function(){
-
+    
+    onMounted(()=>{
         dataLoad(1);
         document.querySelector(".page-unit").addEventListener("click",function(e){
             if(e.target.tagName=="BUTTON"){
@@ -56,7 +56,6 @@
             dataLoad(1);
         })
     })
-    
     const dataLoad = (num) => {
         let params = {
             pageNumber:num,
@@ -73,31 +72,29 @@
             if(response.data.root.dataset.rows.length > 0 && response.data.root.dataset.rows[0].result == 'error'){
                 console.log(response.data.root.dataset.rows[0].msg)
             }else{
-                console.log(response.data.root)
                 tableData = response.data.root.dataset.rows
                 pageTotal = response.data.root.parameters.pageTotal
                 pageUnit = response.data.root.parameters.pageUnit
 
-                pageFirst = num-(num%pageUnit)
+                pageFirst = num - (num%pageUnit) + 1
                 if(pageTotal > num - (num%pageUnit) + pageUnit){
                     pageEnd = parseInt(num - (num%pageUnit) + pageUnit)
                 }else{
                     pageEnd = parseInt(pageTotal)
                 }
-                
                 let tt = "";
-                for(let i=pageFirst; i<pageEnd+4;i++){
-                    // console.log(i)
+                for(let i=pageFirst; i<pageEnd+5;i++){
+                    console.log(i)
                     if(i == pageFirst){
                         tt += '<button><<</button>'
                     }
                     else if(i == pageFirst+1){ 
                         tt += '<button><</button>' 
                     }
-                    else if(i == pageEnd+2){ 
+                    else if(i == pageEnd+3){ 
                         tt += '<button>></button>' 
                     }
-                    else if(i == pageEnd+3){ 
+                    else if(i == pageEnd+4){ 
                         tt += '<button>>></button>' 
                     }
                     else{ 
